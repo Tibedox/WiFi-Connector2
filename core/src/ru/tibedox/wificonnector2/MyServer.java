@@ -6,6 +6,11 @@ import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
 import java.io.IOException;
 
+/**
+ * Класс - сервер
+ * принимает запрос от клиента и отправляет ему ответ
+ */
+
 public class MyServer {
     Server server;
     private MyRequest request;

@@ -33,6 +33,7 @@ public class WiFiConnector extends ApplicationAdapter {
 	TextButton btnCreateClient;
 	TextButton btnExit;
 
+	// всё, что требуется для работы сетевого соединения
 	private InetAddress ipAddress;
 	private String ipAddressOfServer = "?";
 	MyServer server;

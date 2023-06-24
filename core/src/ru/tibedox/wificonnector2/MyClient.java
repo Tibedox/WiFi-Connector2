@@ -6,6 +6,11 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import java.io.IOException;
 
+/**
+ * Класс-клиент
+ * отправляет запрос серверу и принимает от него ответ
+ */
+
 public class MyClient {
     Client client;
 
@@ -22,7 +27,7 @@ public class MyClient {
         try {
             client.connect(5000, ipServer, 54555, 54777);
         } catch (IOException e) {
-            isCantConnected = true;
+            isCantConnected = true; // если не удалось подключиться
             e.printStackTrace();
         }
 

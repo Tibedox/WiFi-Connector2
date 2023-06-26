@@ -5,6 +5,7 @@ import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import java.io.IOException;
+import java.net.InetAddress;
 
 /**
  * Класс-клиент
@@ -17,15 +18,17 @@ public class MyClient {
     boolean isCantConnected;
     private final MyRequest request;
     private MyResponse response;
+    private InetAddress address;
 
-    public MyClient(String ipServer, MyRequest request) {
+    public MyClient(MyRequest request) {
         this.request = request;
         response = new MyResponse();
 
         client = new Client();
         client.start();
+        address = client.discoverHost(54777, 5000);
         try {
-            client.connect(5000, ipServer, 54555, 54777);
+            client.connect(5000, address, 54555, 54777);
         } catch (IOException e) {
             isCantConnected = true; // если не удалось подключиться
             e.printStackTrace();
@@ -51,5 +54,9 @@ public class MyClient {
 
     void send() {
         client.sendTCP(request);
+    }
+
+    public InetAddress getIp() {
+        return address;
     }
 }

@@ -14,6 +14,9 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
 
+/**
+ * Подключение с помощью KryoNet https://android-arsenal.com/details/1/805
+ */
 public class WiFiConnector extends ApplicationAdapter {
 	public static final float SCR_WIDTH = 1280;
 	public static final float SCR_HEIGHT = 720;
@@ -22,7 +25,6 @@ public class WiFiConnector extends ApplicationAdapter {
 	OrthographicCamera camera;
 	Vector3 touch;
 	BitmapFont font;
-	InputKeyboard keyboard;
 	boolean isEnterIP;
 
 	Texture imgBackGround;
@@ -31,6 +33,7 @@ public class WiFiConnector extends ApplicationAdapter {
 
 	TextButton btnCreateServer;
 	TextButton btnCreateClient;
+	TextButton btnStop;
 	TextButton btnExit;
 
 	// всё, что требуется для работы сетевого соединения
@@ -50,14 +53,14 @@ public class WiFiConnector extends ApplicationAdapter {
 		camera.setToOrtho(false, SCR_WIDTH, SCR_HEIGHT);
 		touch = new Vector3();
 		createFont();
-		keyboard = new InputKeyboard(SCR_WIDTH, SCR_HEIGHT, 15);
 
 		imgBackGround = new Texture("swamp.jpg");
 		imgRed = new Texture("circlered.png");
 		imgBlue = new Texture("circleblue.png");
 
-		btnCreateServer = new TextButton(font, "Create Server", 100, 600);
-		btnCreateClient = new TextButton(font, "Create Client", 100, 400);
+		btnCreateServer = new TextButton(font, "Create Server", 100, 700);
+		btnCreateClient = new TextButton(font, "Create Client", 100, 500);
+		btnStop = new TextButton(font, "Stop Client/Server", 100, 400);
 		btnExit = new TextButton(font, "Exit", 100, 100);
 
 		requestFromClient = new MyRequest();
@@ -77,18 +80,21 @@ public class WiFiConnector extends ApplicationAdapter {
 				isServer = true;
 			}
 			if(btnCreateClient.hit(touch.x, touch.y) && !isServer && !isClient && !isEnterIP){
-				isEnterIP = true;
-			}
-			if(isEnterIP && keyboard.endOfEdit(touch.x, touch.y)) {
-				isEnterIP = false;
 				isClient = true;
-				ipAddressOfServer = keyboard.getText();
-				client = new MyClient(ipAddressOfServer, requestFromClient);
+				client = new MyClient(requestFromClient);
+				ipAddressOfServer = client.getIp().getHostAddress();
 				if(client.isCantConnected){
 					isClient = false;
 					client = null;
 					ipAddressOfServer = "Server not found";
 				}
+			}
+			if(btnStop.hit(touch.x, touch.y) && !isEnterIP){
+				isServer = false;
+				server = null;
+				isClient = false;
+				client = null;
+				ipAddressOfServer = "?";
 			}
 			if(btnExit.hit(touch.x, touch.y) && !isEnterIP){
 				Gdx.app.exit();
@@ -128,10 +134,8 @@ public class WiFiConnector extends ApplicationAdapter {
 		btnCreateServer.font.draw(batch, btnCreateServer.text, btnCreateServer.x, btnCreateServer.y);
 		font.draw(batch, "Server's IP: "+ ipAddressOfServer, btnCreateServer.x, btnCreateServer.y-100);
 		btnCreateClient.font.draw(batch, btnCreateClient.text, btnCreateClient.x, btnCreateClient.y);
+		btnStop.font.draw(batch, btnStop.text, btnStop.x, btnStop.y);
 		btnExit.font.draw(batch, btnExit.text, btnExit.x, btnExit.y);
-		if(isEnterIP) {
-			keyboard.draw(batch);
-		}
 
 		batch.end();
 	}
@@ -150,7 +154,6 @@ public class WiFiConnector extends ApplicationAdapter {
 	@Override
 	public void dispose () {
 		batch.dispose();
-		keyboard.dispose();
 		font.dispose();
 		imgBackGround.dispose();
 		imgRed.dispose();

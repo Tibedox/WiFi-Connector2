@@ -43,4 +43,12 @@ public class MyServer {
     public MyRequest getRequest() {
         return request;
     }
+    public void stop(){
+
+        try {
+            server.dispose();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

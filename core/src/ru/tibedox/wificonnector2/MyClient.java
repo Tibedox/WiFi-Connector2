@@ -59,4 +59,14 @@ public class MyClient {
     public InetAddress getIp() {
         return address;
     }
+
+    public void stop(){
+        client.stop();
+        client.close();
+        try {
+            client.dispose();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

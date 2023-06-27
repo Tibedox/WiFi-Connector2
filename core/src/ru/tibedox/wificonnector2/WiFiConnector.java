@@ -91,9 +91,9 @@ public class WiFiConnector extends ApplicationAdapter {
 			}
 			if(btnStop.hit(touch.x, touch.y) && !isEnterIP){
 				isServer = false;
-				server = null;
+				server.stop();
 				isClient = false;
-				client = null;
+				client.stop();
 				ipAddressOfServer = "?";
 			}
 			if(btnExit.hit(touch.x, touch.y) && !isEnterIP){
